@@ -7,21 +7,27 @@
       #container{
         position:relative;
         width:700px;
-        margin:auto;
+        margin:3px auto;
         text-align: center;
       }
       /*carousel items*/
       #container > span{
         display:none;
+        animation-name : fadeIn;
+        animation-duration : 1s;
+      }
+      #container > span:hover{
+        border-bottom: solid green 3px;
       }
       #container > .fadeIn{
         display:inline;
-        animation-name : fadeIn;
-        animation-duration : 1s;
       }
       @keyframes fadeIn {
         from{ opacity : 0; }
         to{ opacity : 1; }
+      }
+      #navs{
+        text-align:center;
       }
       .nav{
         background-color : gray;
@@ -66,23 +72,25 @@
       </span>
       <a class="button button-prev" onClick="carousel1.fadeIn(-1)">&lt;</a>
       <a class="button button-next" onClick="carousel1.fadeIn(1)">&gt;</a>
-      <div>
-        <span class="nav"></span>
-        <span class="nav"></span>
-        <span class="nav"></span>
-      </div>
+  </div>
+  <div id="navs">
+    <span class="nav"></span>
+    <span class="nav"></span>
+    <span class="nav"></span>
   </div>
 
     <script type="text/javascript">
         class FadeInCarousel{
-          constructor(){
-            this.items = document.querySelectorAll("#container > span");
+          constructor(container){
+            this.container = container;
+            this.items = container.querySelectorAll("span");
             this.nav = document.querySelectorAll(".nav");
             this.index = 0;
             this.items[0].classList.add('fadeIn');
             this.nav[0].classList.add('nav-active');
+            this.itvId = null;
           }
-          fadeIn(num){
+          fadeIn (num){
             this.items[this.index].classList.remove('fadeIn');
             this.nav[this.index].classList.remove('nav-active');
             if(this.index === 0 && num === -1){
@@ -93,12 +101,20 @@
             }else{
               this.index += num;
             }
-
             this.items[this.index].classList.add('fadeIn');
             this.nav[this.index].classList.add('nav-active');
           }
+          startCarousel(){
+            this.itvId = setInterval(()=>{this.fadeIn(1)}, 2300);
+          }
+          endCarousel(){
+            clearInterval(this.itvId);
+          }
         }
-        let carousel1 = new FadeInCarousel();
+        const crs = new FadeInCarousel(document.querySelector("#container"));
+        crs.startCarousel();
+        crs.container.addEventListener("mouseover", crs.endCarousel.bind(crs));
+        crs.container.addEventListener("mouseleave", crs.startCarousel.bind(crs));
 
     </script>
 
